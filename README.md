@@ -49,63 +49,6 @@ Instead of simply reading a PDF, students can transform the same content into:
 PDF → Summary → Notes → Quiz → Revision
 ## How It Works
 
-# 📚 StudyLens - AI PDF Learning Assistant
-
-> Learn from your PDFs faster with AI-powered summaries, notes, quizzes, and translation.
-
-StudyLens is an AI-powered learning assistant that helps students understand and revise content from PDF documents. Instead of reading an entire PDF manually, users can upload a document and use AI to generate useful learning material from it.
-
-## ✨ Features
-
-### 📄 1. Text Summarization
-
-Upload a PDF and generate a concise summary of its content.
-
-* Summarize the entire PDF
-* Generate concise and easy-to-understand explanations
-* Reduce lengthy content into important information
-
-### 📝 2. Notes Generation
-
-Convert PDF content into structured study notes.
-
-* Important points
-* Key concepts
-* Definitions
-* Bullet-point notes
-* Easy-to-revise format
-
-### 🧠 3. Quiz Generation
-
-Generate quizzes automatically from the PDF content.
-
-* Multiple-choice questions
-* Questions based on important concepts
-* Answers and explanations
-* Useful for self-assessment and exam preparation
-
-### 🌐 4. Translation
-
-Translate PDF content into another language.
-
-* Translate selected text
-* Support multiple languages
-* Make study material easier to understand
-
----
-
-## 🎯 Project Objective
-
-The main objective of StudyLens is to make learning from PDF documents faster, easier, and more interactive using Generative AI.
-
-Instead of simply reading a PDF, students can transform the same content into:
-
-**PDF → Summary → Notes → Quiz → Revision**
-
----
-
-## 🏗️ How It Works
-
 ```text
                 ┌──────────────┐
                 │  Upload PDF  │
