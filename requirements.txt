@@ -1,0 +1,6 @@
+pymupdf
+openai
+python-dotenv
+pydantic
+langchain
+langchain-openai
