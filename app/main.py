@@ -4,6 +4,7 @@ from notes_service import generate_notes
 from quiz_service import generate_quiz
 from translation_service import translate_text
 from chunker import create_chunks
+from embeddings import create_embeddings
 
 
 PDF_PATH = "data/uploads/sample.pdf"
@@ -36,13 +37,21 @@ def main():
 
     chunks = create_chunks(pages)
 
-    print(f"Number of pages: {len(pages)}")
-    print(f"Number of chunks: {len(chunks)}")
+    # print(f"Number of pages: {len(pages)}")
+    # print(f"Number of chunks: {len(chunks)}")
 
-    for i, chunk in enumerate(chunks[:5]):
-        print(f"\n===== Chunk {i + 1} =====")
-        print(f"Page: {chunk['page_number']}")
-        print(chunk["text"])
+    # for i, chunk in enumerate(chunks[:5]):
+    #     print(f"\n===== Chunk {i + 1} =====")
+    #     print(f"Page: {chunk['page_number']}")
+    #     print(chunk["text"])
+
+    embeddings = create_embeddings(chunks)
+
+    print(f"Number of chunks: {len(chunks)}")
+    print(f"Embedding shape: {embeddings.shape}")
+
+    print("\nFirst embedding:")
+    print(embeddings[0])
 
 
 if __name__ == "__main__":
