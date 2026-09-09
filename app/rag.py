@@ -13,22 +13,22 @@ def generate_answer(question, retrieved_results):
         )
 
     prompt = f"""
-You are a helpful study assistant.
+    You are a helpful study assistant.
 
-Answer the user's question using ONLY the provided context.
+    Answer the user's question using ONLY the provided context.
 
-If the answer cannot be found in the context, say:
-"I couldn't find the answer in the provided document."
+    If the answer cannot be found in the context, say:
+    "I couldn't find the answer in the provided document."
 
-Do not make up information.
+    Do not make up information.
 
-Context:
-{context}
+    Context:
+    {context}
 
-Question:
-{question}
+    Question:
+    {question}
 
-Answer:
-"""
+    Answer:
+    """
 
     return ask_llm(prompt)
