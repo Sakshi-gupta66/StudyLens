@@ -5,8 +5,11 @@ from quiz_service import generate_quiz
 from translation_service import translate_text
 from chunker import create_chunks
 from embeddings import create_embeddings
-from sentence_transformers import SentenceTransformer
+# from sentence_transformers import SentenceTransformer
 from vector_store import search
+from retriever import Retriever
+from rag import generate_answer
+
 
 
 
@@ -27,25 +30,54 @@ def main():
 
     embeddings = create_embeddings(chunks)
 
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    # model = SentenceTransformer("all-MiniLM-L6-v2")
 
-    query = "What is this document about?"
+    # query = "What is this document about?"
 
-    query_embedding = model.encode(query)
+    # query_embedding = model.encode(query)
 
-    results = search(
-        query_embedding,
-        embeddings,
-        chunks,
+    # results = search(
+    #     query_embedding,
+    #     embeddings,
+    #     chunks,
+    #     top_k=3
+    # )
+
+    # print("\n===== RETRIEVED CHUNKS =====")
+
+    # for result in results:
+    #     print(f"\nScore: {result['score']:.4f}")
+    #     print(f"Page: {result['chunk']['page_number']}")
+    #     print(result["chunk"]["text"])
+
+
+    retriever = Retriever(chunks, embeddings)
+
+    question = input("\nAsk a question about the PDF: ")
+
+    results = retriever.retrieve(
+        question,
         top_k=3
     )
 
-    print("\n===== RETRIEVED CHUNKS =====")
+    answer = generate_answer(
+        question,
+        results
+    )
+
+    print("\n===== ANSWER =====\n")
+    print(answer)
+
+    print("\n===== SOURCES =====")
 
     for result in results:
-        print(f"\nScore: {result['score']:.4f}")
-        print(f"Page: {result['chunk']['page_number']}")
-        print(result["chunk"]["text"])
+        page_number = result["chunk"]["page_number"]
+        score = result["score"]
+
+        print(
+            f"Page {page_number} "
+            f"(similarity: {score:.4f})"
+        )
 
 
 if __name__ == "__main__":
