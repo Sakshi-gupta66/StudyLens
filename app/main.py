@@ -1,7 +1,10 @@
 from vector_store import load_vector_store
 from retriever import Retriever
 from rag import generate_answer
+from reranker import Reranker
 
+
+reranker = Reranker()
 
 def main():
     embeddings, chunks = load_vector_store()
@@ -17,8 +20,17 @@ def main():
 
     results = retriever.retrieve(
         question,
+        top_k=10,
+        similarity_threshold=0.0
+    )
+
+    reranker = Reranker()
+
+    results = reranker.rerank(
+        question,
+        results,
         top_k=3,
-        similarity_threshold=0.4
+        threshold=0.0
     )
 
     if not results:
@@ -33,19 +45,19 @@ def main():
         results
     )
 
-    print("\n===== ANSWER =====\n")
-    print(answer)
-
-    print("\n===== SOURCES =====")
+    print("\n===== RETRIEVED CHUNKS =====")
 
     for result in results:
-        page_number = result["chunk"]["page_number"]
-        score = result["score"]
 
-        print(
-            f"Page {page_number} "
-            f"(similarity: {score:.4f})"
-        )
+        chunk = result["chunk"]
+
+        print(f"\nPage: {chunk['page_numbers']}")
+        print(f"Final score: {result['score']:.4f}")
+        print(f"Semantic score: {result['semantic_score']:.4f}")
+        print(f"Keyword score: {result['keyword_score']:.4f}")
+        print(f"Rerank score: {result['rerank_score']:.4f}")
+        print("Text:")
+        print(chunk["text"])
 
 
 if __name__ == "__main__":

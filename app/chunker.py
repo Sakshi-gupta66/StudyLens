@@ -1,22 +1,57 @@
-def create_chunks(pages, chunk_size=1000, overlap=200):
+def create_chunks(pages, chunk_size=1000, overlap_paragraphs=1):
     chunks = []
 
+    current_paragraphs = []
+    current_pages = []
+    current_length = 0
+
     for page in pages:
-        text = page["text"]
+
         page_number = page["page_number"]
 
-        start = 0
+        paragraphs = page["text"].split("\n\n")
 
-        while start < len(text):
-            end = start + chunk_size
+        for paragraph in paragraphs:
 
-            chunk_text = text[start:end]
+            paragraph = paragraph.strip()
 
-            chunks.append({
-                "text": chunk_text,
-                "page_number": page_number
-            })
+            if not paragraph:
+                continue
 
-            start += chunk_size - overlap
+            paragraph_length = len(paragraph)
+
+            if (
+                current_paragraphs
+                and current_length + paragraph_length > chunk_size
+            ):
+                chunks.append({
+                    "text": "\n\n".join(current_paragraphs),
+                    "page_numbers": current_pages
+                })
+
+                current_paragraphs = current_paragraphs[
+                    -overlap_paragraphs:
+                ]
+
+                current_pages = current_pages[
+                    -overlap_paragraphs:
+                ]
+
+                current_length = sum(
+                    len(p) for p in current_paragraphs
+                )
+
+            current_paragraphs.append(paragraph)
+
+            if page_number not in current_pages:
+                current_pages.append(page_number)
+
+            current_length += paragraph_length
+
+    if current_paragraphs:
+        chunks.append({
+            "text": "\n\n".join(current_paragraphs),
+            "page_numbers": current_pages
+        })
 
     return chunks

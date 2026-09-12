@@ -1,5 +1,5 @@
 from sentence_transformers import SentenceTransformer
-from vector_store import search
+from app.vector_store import search
 
 
 class Retriever:
@@ -15,11 +15,12 @@ class Retriever:
         self,
         query,
         top_k=3,
-        similarity_threshold=0.4
+        similarity_threshold=0.0
     ):
         query_embedding = self.model.encode(query)
 
         results = search(
+            query,
             query_embedding,
             self.embeddings,
             self.chunks,
