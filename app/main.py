@@ -1,7 +1,7 @@
-from vector_store import load_vector_store
-from retriever import Retriever
-from rag import generate_answer
-from reranker import Reranker
+from app.vector_store import load_vector_store
+from app.retriever import Retriever
+from app.rag import generate_answer
+from app.reranker import Reranker
 
 
 reranker = Reranker()

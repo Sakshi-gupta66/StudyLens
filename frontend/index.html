@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI PDF Tutor</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>📚 AI PDF Tutor</h1>
+
+        <p class="subtitle">
+            Upload a PDF and study it with AI
+        </p>
+
+
+        <!-- Upload Section -->
+
+        <div class="card">
+
+            <h2>Upload PDF</h2>
+
+            <input
+                type="file"
+                id="pdfFile"
+                accept=".pdf"
+            >
+
+            <button onclick="uploadPDF()">
+                Upload PDF
+            </button>
+
+            <p id="uploadStatus"></p>
+
+        </div>
+
+
+        <!-- Features -->
+
+        <div class="features">
+
+            <button type="button" onclick="askQuestion()">
+                💬 Ask
+            </button>
+
+            <button type="button" onclick="generateSummary()">
+                📄 Summary
+            </button>
+
+            <button type="button" onclick="generateNotes()">
+                📝 Notes
+            </button>
+
+            <button type="button" onclick="generateQuiz()">
+                🎯 Quiz
+            </button>
+
+            <button type="button" onclick="translatePDF()">
+                🌍 Translate
+            </button>
+
+        </div>
+
+
+        <!-- Question -->
+
+        <div class="card">
+
+            <h2>Ask a Question</h2>
+
+            <input
+                type="text"
+                id="question"
+                placeholder="Ask something about your PDF..."
+            >
+
+            <button onclick="askQuestion()">
+                Ask
+            </button>
+
+        </div>
+
+
+        <!-- Output -->
+
+        <div class="card">
+
+            <h2>Result</h2>
+
+            <div id="result">
+                Your result will appear here...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

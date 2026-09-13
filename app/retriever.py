@@ -15,8 +15,9 @@ class Retriever:
         self,
         query,
         top_k=3,
-        similarity_threshold=0.0
+        similarity_threshold=0.4
     ):
+
         query_embedding = self.model.encode(query)
 
         results = search(

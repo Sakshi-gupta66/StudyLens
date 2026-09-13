@@ -1,27 +1,48 @@
-from llm_service import ask_llm
+from app.llm_service import ask_llm
 
 
 def translate_text(pages, target_language):
-    document_text = ""
 
-    for page in pages:
-        document_text += f"\nPage {page['page_number']}:\n"
-        document_text += page["text"]
+    translated_pages = []
 
-    prompt = f"""
-You are a translation assistant.
+    for page in pages[:3]:
 
-Translate the following study material into {target_language}.
+        print(
+            f"TRANSLATE: processing page {page['page_number']}"
+        )
 
-Requirements:
-- Preserve the original meaning.
-- Keep technical terms accurate.
-- Preserve important formulas and symbols.
-- Keep the page structure.
-- Do not add new information.
+        page_text = page["text"].strip()
 
-Study material:
-{document_text}
+        if not page_text:
+            continue
+
+        prompt = f"""
+You are a professional translation engine.
+
+Translate the following text into {target_language}.
+
+IMPORTANT:
+- Translate the text itself.
+- Return ONLY the translated text.
+- Do not summarize.
+- Do not add information.
+- Preserve formulas, numbers, symbols and technical terms.
+
+Original text:
+
+{page_text}
+
+Translation:
 """
 
-    return ask_llm(prompt)
+        translated_text = ask_llm(prompt)
+
+        print(
+            f"TRANSLATE: page {page['page_number']} completed"
+        )
+
+        translated_pages.append(
+            f"Page {page['page_number']}:\n{translated_text}"
+        )
+
+    return "\n\n".join(translated_pages)

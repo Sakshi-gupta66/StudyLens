@@ -1,12 +1,19 @@
-from llm_service import ask_llm
+from app.llm_service import ask_llm
 
 
 def generate_notes(pages):
+
+    print("NOTES: function started")
+    print("NOTES: pages received =", len(pages))
+
     document_text = ""
 
-    for page in pages:
+    for page in pages[:3]:
         document_text += f"\nPage {page['page_number']}:\n"
         document_text += page["text"]
+
+    print("NOTES: text prepared")
+    print("NOTES: text length =", len(document_text))
 
     prompt = f"""
 You are a helpful study assistant.
@@ -21,9 +28,18 @@ Requirements:
 - Keep the notes concise but informative.
 - Include important formulas or definitions if present.
 - Do not add information that is not present in the study material.
+- Return only the notes.
 
 Study material:
 {document_text}
+
+Notes:
 """
 
-    return ask_llm(prompt)
+    print("NOTES: sending request to LLM")
+
+    result = ask_llm(prompt)
+
+    print("NOTES: LLM responded")
+
+    return result
