@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="StudyLens — turn documents into understanding.">
+<title>StudyLens · Your PDF. Your AI tutor.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+<div id="app" class="app">
+  <div id="app-shell" class="app-shell">
+    <aside id="sidebar" class="sidebar" aria-label="Main navigation">
+      <div id="sidebar-logo" class="sidebar__logo"><span class="logo-mark">S</span><span>StudyLens</span></div>
+      <nav id="sidebar-nav" class="sidebar__nav">
+        <button id="nav-dashboard" class="sidebar__nav-item sidebar__nav-item--active" data-view="dashboard"><span>⌂</span>Dashboard</button>
+        <button id="nav-documents" class="sidebar__nav-item" data-view="documents"><span>▣</span>My Documents</button>
+        <button id="nav-ask" class="sidebar__nav-item" data-view="ask"><span>✦</span>Ask AI</button>
+        <button id="nav-summary" class="sidebar__nav-item" data-view="summary"><span>◫</span>Summary</button>
+        <button id="nav-notes" class="sidebar__nav-item" data-view="notes"><span>☷</span>Notes</button>
+        <button id="nav-quiz" class="sidebar__nav-item" data-view="quiz"><span>◇</span>Quiz</button>
+        <button id="nav-flashcards" class="sidebar__nav-item is-soon" data-view="flashcards"><span>▤</span>Flashcards <b>Soon</b></button>
+        <button id="nav-search" class="sidebar__nav-item is-soon" data-view="search"><span>⌕</span>Search <b>Soon</b></button>
+        <button id="nav-progress" class="sidebar__nav-item is-soon" data-view="progress"><span>◒</span>Progress <b>Soon</b></button>
+      </nav>
+      <div class="sidebar__footer">
+        <button id="nav-settings" class="sidebar__nav-item is-soon" data-view="settings"><span>⚙</span>Settings <b>Soon</b></button>
+        <button id="nav-profile" class="sidebar__nav-item is-soon" data-view="profile"><span>●</span>Profile <b>Soon</b></button>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme"><span>☾</span><span>Theme</span></button>
+      </div>
+    </aside>
+
+    <div class="mobile-backdrop" id="mobile-backdrop"></div>
+    <main class="shell-main">
+      <header id="topbar" class="topbar">
+        <button id="mobile-menu" class="icon-button mobile-only" aria-label="Open navigation">☰</button>
+        <div id="current-document" class="topbar__document"><span class="doc-dot"></span><span id="current-document-name">No document</span></div>
+        <div class="topbar__actions">
+          <div class="health-indicator" title="Backend status"><span id="health-dot" class="health-dot"></span><span id="document-status">Checking engine</span></div>
+          <button id="global-search" class="icon-button" aria-label="Search">⌕</button>
+          <button id="notification-button" class="icon-button" aria-label="Notifications">♢</button>
+          <button id="profile-button" class="avatar" aria-label="Profile">M</button>
+        </div>
+      </header>
+
+      <section class="views" aria-live="polite">
+        <section id="dashboard-view" class="view view--active">
+          <div id="hero-section" class="hero-section">
+            <div class="eyebrow">AI-powered study workspace</div>
+            <h1>Turn your PDFs into<br><em>understanding.</em></h1>
+            <p>Upload your study material and let AI help you understand, revise, and master it.</p>
+            <div class="hero-actions"><button id="upload-button" class="button button--primary">Upload PDF <span>↗</span></button><button id="demo-button" class="button button--ghost">Explore Demo</button></div>
+          </div>
+          <div id="upload-section" class="upload-section">
+            <input id="pdf-file-input" type="file" accept="application/pdf,.pdf" hidden>
+            <div id="upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Upload PDF">
+              <div class="upload-orb"><span>↑</span></div>
+              <div><h2>Drop your PDF here</h2><p>or <span>click to browse</span> · PDF files only</p></div>
+              <small id="upload-status">Up to your browser's available file size</small>
+              <div class="upload-progress" aria-hidden="true"><span></span></div>
+            </div>
+          </div>
+          <div id="document-card" class="document-card hidden"></div>
+          <div class="section-heading"><div><span class="eyebrow">Built for studying</span><h2>Everything your document can become.</h2></div></div>
+          <div class="feature-grid">
+            <button class="feature-card" data-view="ask"><span class="feature-icon">✦</span><strong>Ask Anything</strong><span>Grounded answers with page sources.</span></button>
+            <button class="feature-card" data-view="summary"><span class="feature-icon">◫</span><strong>Smart Summaries</strong><span>Turn dense material into a readable overview.</span></button>
+            <button class="feature-card" data-view="notes"><span class="feature-icon">☷</span><strong>Study Notes</strong><span>Organize concepts, definitions and key points.</span></button>
+            <button class="feature-card" data-view="quiz"><span class="feature-icon">◇</span><strong>AI Quizzes</strong><span>Test your understanding after learning.</span></button>
+            <button class="feature-card" data-view="translation"><span class="feature-icon">文</span><strong>Multilingual Learning</strong><span>Study your document in another language.</span></button>
+            <button class="feature-card"><span class="feature-icon">◎</span><strong>Source-Grounded</strong><span>See where an answer came from.</span></button>
+          </div>
+        </section>
+
+        <section id="workspace-view" class="view">
+          <div id="workspace-sidebar" class="workspace-sidebar card"><div class="mini-doc"><span class="pdf-icon">PDF</span><div><strong id="workspace-doc-name">No document</strong><small id="workspace-doc-meta">Upload a PDF to begin</small></div></div><div class="workspace-tools"><button class="tool-tab active" data-view="ask">Ask AI</button><button class="tool-tab" data-view="summary">Summary</button><button class="tool-tab" data-view="notes">Notes</button><button class="tool-tab" data-view="quiz">Quiz</button><button class="tool-tab" data-view="translation">Translate</button></div></div>
+          <div id="workspace-main" class="workspace-main"><div id="ask-view" class="workspace-view view view--active"></div><div id="summary-view" class="workspace-view view"></div><div id="notes-view" class="workspace-view view"></div><div id="quiz-view" class="workspace-view view"></div><div id="translation-view" class="workspace-view view"></div></div>
+          <aside id="workspace-tools" class="workspace-tools-panel card"><div class="panel-title">Study tools</div><button data-view="ask">Ask AI <span>⌘</span></button><button data-view="summary">Generate summary</button><button data-view="notes">Create notes</button><button data-view="quiz">Build quiz</button><button data-view="translation">Translate</button><div class="panel-tip">Answers are grounded in your uploaded document.</div></aside>
+        </section>
+
+        <section id="documents-view" class="view"><div class="page-header"><div><span class="eyebrow">Library</span><h1>My Documents</h1><p>Your current session lives here. Persistent multi-document storage is coming later.</p></div><button class="button button--primary" data-upload-trigger="true">Upload PDF</button></div><div id="documents-empty" class="empty-state card"><div class="empty-icon">▣</div><h2>Your library is waiting.</h2><p>Upload a PDF and your current study document will appear here.</p></div></section>
+        <section id="coming-view" class="view"><div class="coming-card card"><div class="coming-glow"></div><span class="eyebrow">On the roadmap</span><h1 id="coming-title">Coming soon</h1><p id="coming-copy">This capability is designed into the StudyLens experience and will connect when its backend contract exists.</p><span class="soon-pill">Coming soon</span></div></section>
+      </section>
+    </main>
+  </div>
+
+  <div id="loading-overlay" class="loading-overlay hidden"><div class="loading-card"><div class="spinner"></div><strong id="loading-title">Working…</strong><span id="loading-copy">Preparing your study experience.</span></div></div>
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+  <div id="modal-container" class="modal-container hidden"></div>
+</div>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
