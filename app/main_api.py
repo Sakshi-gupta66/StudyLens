@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 import shutil
+from fastapi import HTTPException
+import uuid
 
 from app.translation_service import translate_text
 from app.quiz_service import generate_quiz
@@ -69,99 +71,110 @@ def health():
 
 # Upload PDF
 
-@app.post("/upload")
-def upload_pdf(file: UploadFile = File(...)):
 
+MAX_UPLOAD_BYTES = 100 * 1024 * 1024  # 100 MB
+
+
+@app.post("/upload")
+async def upload_pdf(file: UploadFile = File(...)):
     global retriever, current_pdf_path
 
-    print("UPLOAD: request received")
-
-    upload_dir = "data/uploads"
-
-    os.makedirs(
-        upload_dir,
-        exist_ok=True
-    )
-
-    file_path = os.path.join(
-        upload_dir,
-        file.filename
-    )
-
-    print("UPLOAD: saving file")
-
-    with open(
-        file_path,
-        "wb"
-    ) as buffer:
-
-        shutil.copyfileobj(
-            file.file,
-            buffer
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(
+            status_code=400,
+            detail="Only PDF files are supported."
         )
 
-    print("UPLOAD: file saved")
+    content = await file.read(MAX_UPLOAD_BYTES + 1)
 
-    current_pdf_path = file_path
+    if not content:
+        raise HTTPException(
+            status_code=400,
+            detail="The uploaded file is empty."
+        )
 
-    print("UPLOAD: extracting PDF")
+    if len(content) > MAX_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail="PDF exceeds the 100 MB upload limit."
+        )
 
-    pages = extract_text_from_pdf(
-        file_path
+    if not content.startswith(b"%PDF-"):
+        raise HTTPException(
+            status_code=400,
+            detail="The uploaded file is not a valid PDF."
+        )
+
+    upload_dir = "data/uploads"
+    os.makedirs(upload_dir, exist_ok=True)
+
+    # Use a generated filename to avoid path traversal
+    # and accidental overwriting of another uploaded file.
+    file_path = os.path.join(
+        upload_dir,
+        f"{uuid.uuid4().hex}.pdf"
     )
 
-    print(
-        f"UPLOAD: extracted {len(pages)} pages"
-    )
+    try:
+        with open(file_path, "wb") as buffer:
+            buffer.write(content)
 
-    print("UPLOAD: creating chunks")
+        pages = extract_text_from_pdf(file_path)
 
-    chunks = create_chunks(
-        pages
-    )
+        if not pages or not any(
+            page["text"].strip() for page in pages
+        ):
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    "No extractable text was found in this PDF. "
+                    "Scanned PDFs may require OCR."
+                )
+            )
 
-    print(
-        f"UPLOAD: created {len(chunks)} chunks"
-    )
+        chunks = create_chunks(pages)
 
-    if not chunks:
+        if not chunks:
+            raise HTTPException(
+                status_code=422,
+                detail="Unable to create searchable PDF chunks."
+            )
+
+        new_embeddings = create_embeddings(chunks)
+
+        # Prepare the new retriever before changing active state.
+        new_retriever = Retriever(chunks, new_embeddings)
+
+        save_vector_store(new_embeddings, chunks)
+
+        current_pdf_path = file_path
+        retriever = new_retriever
+
         return {
-            "message": "PDF uploaded, but no text could be extracted.",
-            "filename": file.filename,
+            "message": "PDF uploaded and processed successfully.",
+            "filename": os.path.basename(file.filename),
             "pages": len(pages),
-            "chunks": 0
+            "chunks": len(chunks)
         }
 
-    print("UPLOAD: creating embeddings")
+    except HTTPException:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+        raise
 
-    embeddings = create_embeddings(
-        chunks
-    )
+    except Exception as exc:
+        if os.path.exists(file_path):
+            os.remove(file_path)
 
-    print("UPLOAD: embeddings created")
+        print(f"PDF processing failed: {exc}")
 
-    print("UPLOAD: saving vector store")
+        raise HTTPException(
+            status_code=422,
+            detail="The PDF could not be processed."
+        ) from exc
 
-    save_vector_store(
-        embeddings,
-        chunks
-    )
-
-    print("UPLOAD: vector store saved")
-
-    retriever = Retriever(
-        chunks,
-        embeddings
-    )
-
-    print("UPLOAD: retriever ready")
-
-    return {
-        "message": "PDF uploaded and processed successfully.",
-        "filename": file.filename,
-        "pages": len(pages),
-        "chunks": len(chunks)
-    }
+    finally:
+        await file.close()
 
 
 # Ask question
