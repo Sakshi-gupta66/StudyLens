@@ -24,8 +24,8 @@ class TranslationRequest(BaseModel):
 current_pdf_path = None
 
 app = FastAPI(
-    title="AI PDF Tutor",
-    description="AI-powered PDF study assistant",
+    title="StudyLens",
+    description="AI-powered document study assistant",
     version="1.0.0"
 )
 
@@ -56,7 +56,7 @@ class QuestionRequest(BaseModel):
 @app.get("/")
 def home():
     return {
-        "message": "AI PDF Tutor API is running"
+        "message": "StudyLens API is running"
     }
 
 
