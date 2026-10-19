@@ -209,8 +209,60 @@ function resetUpload() {
     $("#pdf").click();
   });
 }
-const input = $("#pdf"),
-  drop = $("#drop");
+
+const input = document.getElementById("pdf-file-input");
+const chooseButton = document.getElementById("upload-button");
+const drop = document.getElementById("upload-zone");
+
+console.log("StudyLens upload elements:", {
+  input,
+  chooseButton,
+  drop
+});
+
+if (!input || !chooseButton || !drop) {
+  console.error(
+    "Upload setup failed: check the IDs in index.html."
+  );
+} else {
+  chooseButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    input.click();
+  });
+
+  input.addEventListener("change", async () => {
+    const file = input.files?.[0];
+
+    console.log("Selected file:", file?.name);
+
+    if (file) {
+      await upload(file);
+    }
+
+    input.value = "";
+  });
+
+  drop.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    drop.classList.add("drag");
+  });
+
+  drop.addEventListener("dragleave", () => {
+    drop.classList.remove("drag");
+  });
+
+  drop.addEventListener("drop", async (event) => {
+    event.preventDefault();
+    drop.classList.remove("drag");
+
+    const file = event.dataTransfer.files?.[0];
+
+    if (file) {
+      await upload(file);
+    }
+  });
+}
+
 $("#choose").onclick = (e) => {
   e.stopPropagation();
   input.click();
